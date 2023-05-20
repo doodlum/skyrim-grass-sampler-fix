@@ -37,7 +37,7 @@ struct Hooks
 
 	static void Install()
 	{
-		stl::write_thunk_call<Grass_SetDirtyStates>(REL::RelocationID(75479, 77265).address() + 0x61);
+		stl::write_thunk_call<Grass_SetDirtyStates>(REL::RelocationID(75479, 77265).address() + REL::VariantOffset(0x61, 0x61, 0x65).offset());
 	}
 };
 
