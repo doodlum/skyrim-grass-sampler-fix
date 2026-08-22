@@ -27,8 +27,8 @@ struct Hooks
 
 			// Override grass sampler
 
-			auto manager = RE::BSRenderManager::GetSingleton();
-			auto context = manager->GetRuntimeData().context;
+			auto manager = RE::BSGraphics::Renderer::GetSingleton();
+			auto context = reinterpret_cast<ID3D11DeviceContext*>(manager->GetRuntimeData().context);
 
 			context->PSSetSamplers(0, 1, &SamplerStatesCollection::GetSingleton()->states[0][3]);
 		}
