@@ -83,14 +83,26 @@ namespace BSGraphics
 
 		static_assert(offsetof(RUNTIME_DATA, fDynamicResolutionCurrentWidthScale) == 0xA4);
 
+		// Skyrim 1.7.99 inserted 0x10 bytes ahead of this block, so the Anniversary
+		// Edition offset is no longer the constant 0x60 it was from 1.6.317 onwards.
+		// CommonLibSSE-NG makes the same correction for its own RE::BSGraphics::State
+		// in v6.7.0 (include/RE/S/State.h, RUNTIME_DATA_AE_OFFSET), but this is a
+		// private mirror of that struct, so it has to be corrected independently.
+		[[nodiscard]] static std::size_t AERuntimeDataOffset() noexcept
+		{
+			static const std::size_t offset =
+				REL::Module::IsAtLeast(SKSE::RUNTIME_SSE_1_7_99) ? 0x70 : 0x60;
+			return offset;
+		}
+
 		[[nodiscard]] RUNTIME_DATA& GetRuntimeData() noexcept
 		{
-			return REL::RelocateMemberIfNewer<RUNTIME_DATA>(SKSE::RUNTIME_SSE_1_6_317, this, 0x58, 0x60);
+			return REL::RelocateMemberIfNewer<RUNTIME_DATA>(SKSE::RUNTIME_SSE_1_6_317, this, 0x58, AERuntimeDataOffset());
 		}
 
 		[[nodiscard]] inline const RUNTIME_DATA& GetRuntimeData() const noexcept
 		{
-			return REL::RelocateMemberIfNewer<RUNTIME_DATA>(SKSE::RUNTIME_SSE_1_6_317, this, 0x58, 0x60);
+			return REL::RelocateMemberIfNewer<RUNTIME_DATA>(SKSE::RUNTIME_SSE_1_6_317, this, 0x58, AERuntimeDataOffset());
 		}
 	};
 }
